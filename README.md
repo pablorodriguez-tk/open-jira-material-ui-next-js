@@ -17,3 +17,11 @@ mongodb://localhost:27017/entriesdb
 ## Configurar las variables de entorno
 
 Renombar el archivo **.env.example** a **.env** y configurar las variables de entorno
+
+## Llenar la base de datos con información de pruebas
+
+Llamar a
+
+```
+http://localhost:3000/api/seed
+```
