@@ -18,7 +18,6 @@ export default function handler(
       return getEntries(res);
     case "POST":
       return postEntry(req, res);
-
     default:
       return res.status(400).json({ message: "Endpoint no existe" });
   }
