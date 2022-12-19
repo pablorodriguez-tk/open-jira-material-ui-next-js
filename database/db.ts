@@ -22,19 +22,29 @@ export const connect = async () => {
       console.log("Usando conexión anterior");
       return;
     }
-    await mongoose.disconnect();
-    mongooConnection.isConnected = 0;
+    try {
+      await mongoose.disconnect();
+      mongooConnection.isConnected = 0;
+    } catch (error) {
+      console.log(error);
+    }
   }
-
-  await mongoose.connect(process.env.MONGO_URL || "");
-  mongooConnection.isConnected = 1;
-  console.log("Conectado a MongoDB: ", process.env.MONGO_URL);
+  try {
+    await mongoose.connect(process.env.MONGO_URL || "");
+    mongooConnection.isConnected = 1;
+    console.log("Conectado a MongoDB: ", process.env.MONGO_URL);
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const disconnect = async () => {
   if (mongooConnection.isConnected === 0) return;
-
-  await mongoose.disconnect();
-  mongooConnection.isConnected = 0;
-  console.log("Desconectado de MongoDB");
+  try {
+    await mongoose.disconnect();
+    mongooConnection.isConnected = 0;
+    console.log("Desconectado de MongoDB");
+  } catch (error) {
+    console.log(error);
+  }
 };
