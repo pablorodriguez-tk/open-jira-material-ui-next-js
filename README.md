@@ -18,6 +18,13 @@ mongodb://localhost:27017/entriesdb
 
 Renombar el archivo **.env.example** a **.env** y configurar las variables de entorno
 
+- Reconstruir los modulos de node y levantar el servidor
+
+```
+npm install
+npm run dev
+```
+
 ## Llenar la base de datos con información de pruebas
 
 Llamar a
