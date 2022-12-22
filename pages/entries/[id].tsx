@@ -19,8 +19,10 @@ import { Layout } from "../../components/layouts";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import { Entry, EntryStatus } from "../../interfaces";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
-import { useState, useMemo, FC } from "react";
+import { useState, useMemo, FC, useContext } from "react";
 import { dbEntries } from "../../database";
+import { EntriesContext } from "../../context/entries";
+import { dateFunctions } from "../../utils";
 
 const validStatus: EntryStatus[] = ["pending", "in-progress", "finished"];
 
@@ -28,10 +30,10 @@ interface Props {
   entry: Entry;
 }
 
-export const EntryPage: FC<Props> = (props) => {
-  console.log(props);
-  const [inputValue, setInputValue] = useState("");
-  const [status, setStatus] = useState<EntryStatus>("pending");
+export const EntryPage: FC<Props> = ({ entry }) => {
+  const { updateEntry } = useContext(EntriesContext);
+  const [inputValue, setInputValue] = useState(entry.description);
+  const [status, setStatus] = useState<EntryStatus>(entry.status);
   const [touched, setTouched] = useState(false);
 
   const isNotValid = useMemo(
@@ -48,17 +50,27 @@ export const EntryPage: FC<Props> = (props) => {
   };
 
   const onSave = () => {
-    console.log({ inputValue, status });
+    if (inputValue.trim().length === 0) return;
+
+    const updatedEntry: Entry = {
+      ...entry,
+      description: inputValue,
+      status,
+    };
+
+    updateEntry(updatedEntry, true);
   };
 
   return (
-    <Layout title="Entry">
+    <Layout title={inputValue.substring(0, 20) + "..."}>
       <Grid container justifyContent="center" sx={{ marginTop: 2 }}>
         <Grid item xs={12} sm={8} md={6}>
           <Card>
             <CardHeader
-              title={`Entrada: ${inputValue}`}
-              subheader={`Creada hace: ... minutos`}
+              title={`Entrada:`}
+              subheader={`Creada ${dateFunctions.getFormatDistanceToNow(
+                entry.createdAt
+              )}`}
             />
             <CardContent>
               <TextField
@@ -133,7 +145,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   }
 
   return {
-    props: { entry: "asd" },
+    props: { entry },
   };
 };
 
