@@ -3,6 +3,7 @@ import { Entry } from "../../interfaces";
 import { EntriesContext, entriesReducer } from "./";
 import { entriesApi } from "../../apis";
 import { useSnackbar } from "notistack";
+import Router from "next/router";
 
 export interface EntriesState {
   entries: Entry[];
@@ -48,6 +49,28 @@ export const EntriesProvider: FC<PropsWithChildren> = ({ children }) => {
           },
         });
       }
+      Router.push("/");
+    } catch (error) {
+      console.log({ error });
+    }
+  };
+
+  const deleteEntry = async (id: string) => {
+    try {
+      await entriesApi.delete<Entry>(`/entries/${id}`);
+      dispatch({
+        type: "[Entry] - Delete-Entry",
+        payload: id,
+      });
+      enqueueSnackbar("Entrada borrada", {
+        variant: "warning",
+        autoHideDuration: 1500,
+        anchorOrigin: {
+          vertical: "top",
+          horizontal: "right",
+        },
+      });
+      Router.push("/");
     } catch (error) {
       console.log({ error });
     }
@@ -72,6 +95,7 @@ export const EntriesProvider: FC<PropsWithChildren> = ({ children }) => {
         //Methods
         addNewEntry,
         updateEntry,
+        deleteEntry,
       }}
     >
       {children}
